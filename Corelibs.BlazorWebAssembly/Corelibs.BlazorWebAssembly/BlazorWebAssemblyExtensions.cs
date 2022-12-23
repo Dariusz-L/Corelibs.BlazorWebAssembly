@@ -10,7 +10,7 @@ namespace Corelibs.BlazorWebAssembly
            this IServiceCollection services, string baseAddress)
         {
             services.AddAuthorizationAndSignInRedirection<
-                WebAuthUser, WebSignInRedirector, AccessTokenNotAvailableException, BaseAddressAuthorizationMessageHandler>(
+                WebAuthUser, WebSignInRedirector, BaseAddressAuthorizationMessageHandler>(
                 baseAddress);
         }
     }
