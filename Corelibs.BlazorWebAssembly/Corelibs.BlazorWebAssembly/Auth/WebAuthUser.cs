@@ -15,7 +15,11 @@ namespace Corelibs.BlazorWebAssembly
         private bool? _isSignedIn = false;
         public async Task<bool> IsSignedIn()
         {
-            var tokenResult = await _provider.RequestAccessToken();
+            var tokenResult = await _provider.RequestAccessToken(
+                new AccessTokenRequestOptions()
+                {
+                    ReturnUrl = "/"
+                });
             if (!tokenResult.TryGetToken(out var token))
                 return false;
 
