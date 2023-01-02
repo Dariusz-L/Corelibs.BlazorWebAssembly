@@ -17,8 +17,8 @@ namespace Corelibs.BlazorWebAssembly
         {
             if (exception is AccessTokenNotAvailableException accessTokenException)
             {
-                accessTokenException.Redirect();
-                _navigation.NavigateTo(_navigation.Uri, forceLoad: true);
+                //accessTokenException.Redirect();
+                //_navigation.NavigateTo(_navigation.BaseUri, forceLoad: true);
             }
         }
     }
