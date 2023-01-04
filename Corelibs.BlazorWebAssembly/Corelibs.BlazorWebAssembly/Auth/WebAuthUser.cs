@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace Corelibs.BlazorWebAssembly
 {
-    public class WebAuthUser : IAuthUser
+    public class WebAuthUser : IAuthUser, IDisposable
     {
         private readonly IAccessTokenProvider _provider;
         private readonly NavigationManager _navigation;
@@ -46,15 +46,23 @@ namespace Corelibs.BlazorWebAssembly
             _authenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
         }
 
+        public void Dispose()
+        {
+            _authenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+        }
+
         private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
         {
             var state = await task;
-            _isSignedIn = state.User.Identity?.IsAuthenticated;
+            _isSignedIn = state.User?.Identity?.IsAuthenticated;
             
-            if (_isSignedIn.Value)
+            if (_isSignedIn != null && _isSignedIn.Value)
                 _name = state.User.Identity?.Name ?? string.Empty;
 
-            OnAuthenticatedStateChanged?.Invoke(_isSignedIn.Value);
+            if (_isSignedIn == null || !_isSignedIn.Value)
+                OnAuthenticatedStateChanged?.Invoke(false);
+            else
+                OnAuthenticatedStateChanged?.Invoke(true);
         }
 
         public Task SignIn()
@@ -66,7 +74,7 @@ namespace Corelibs.BlazorWebAssembly
         public async Task SignOut()
         {
             await _signOutManager.SetSignOutState();
-            _navigation.NavigateTo("authentication/logout");
+            _navigation.NavigateTo("authentication/logout-callback");
         }
     }
 }

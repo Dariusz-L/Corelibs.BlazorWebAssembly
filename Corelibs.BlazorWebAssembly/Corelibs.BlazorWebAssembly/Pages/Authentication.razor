@@ -1,7 +1,33 @@
 ﻿@page "/authentication/{action}"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-<RemoteAuthenticatorView Action="@Action" />
+
+<RemoteAuthenticatorView Action="@Action" 
+    LogInFailed="OnLoginInFailed"
+    OnLogInSucceeded="OnLogInSucceeded">
+    <LogOutSucceeded>
+        @{
+           InvokeAsync(() => _navigation.NavigateTo("/", forceLoad: true));
+        }
+    </LogOutSucceeded>
+    <LogOutFailed>
+        @{
+            InvokeAsync(() => _navigation.NavigateTo("/", forceLoad: true));
+        }
+    </LogOutFailed>
+</RemoteAuthenticatorView>
 
 @code{
     [Parameter] public string? Action { get; set; }
+    [Inject] private NavigationManager _navigation { get; set; }
+
+    RenderFragment OnLoginInFailed(string a)
+    {
+        _navigation.NavigateTo("/", forceLoad: true);
+        return @<div>Log in failed</div>;
+    }
+
+    void OnLogInSucceeded(RemoteAuthenticationState state)
+    {
+        _navigation.NavigateTo("/", forceLoad: true);
+    }
 }
